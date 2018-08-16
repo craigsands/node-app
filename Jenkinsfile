@@ -15,7 +15,7 @@ pipeline {
         sh 'whoami'
         sh 'pwd'
         sh 'ls -l'
-        sh 'docker run hashicorp/packer validate ami.json'
+        sh 'docker run hashicorp/packer validate $(ls -l)'
         sh 'docker run -v /aws/credentials:/root/aws/credentials hashicorp/packer build ami.json'
       }
     }
