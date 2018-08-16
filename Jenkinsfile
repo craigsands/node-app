@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'goforgold/build-container:latest'
+    }
+
+  }
   stages {
     stage('Clone') {
       steps {
@@ -8,13 +13,6 @@ pipeline {
       }
     }
     stage('Build') {
-      agent {
-        docker {
-          image 'hashicorp/packer:light'
-          args '-i -t'
-        }
-
-      }
       steps {
         sh 'packer validate ami.json'
         sh 'packer build ami.json'
