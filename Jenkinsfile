@@ -6,12 +6,12 @@ pipeline {
 
   }
   stages {
-//    stage('Clone') {
-//      steps {
-//        sh 'rm -rf node-app'
-//        sh 'git clone https://github.com/craigsands/node-app'
-//      }
-//    }
+    stage('Clone') {
+      steps {
+        sh 'rm -rf node-app'
+        sh 'git clone https://github.com/craigsands/node-app'
+      }
+    }
 //    stage('Build') {
 //      steps {
 //        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
