@@ -24,8 +24,9 @@
             "npm init -f",
             "npm install",
             "sudo cp node-app.service /etc/systemd/system/.",
-            "systemctl start node-app",
-            "systemctl enable node-app"
+            "sudo systemctl daemon-reload",
+            "sudo systemctl start node-app",
+            "sudo systemctl enable node-app"
         ]
     }
   ],
