@@ -1,5 +1,5 @@
 {
-  "name": "node-app",
+  "name": "app",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,5 +12,18 @@
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "morgan": "~1.9.0"
-  }
+  },
+  "description": "",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/craigsands/node-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/craigsands/node-app/issues"
+  },
+  "homepage": "https://github.com/craigsands/node-app#readme",
+  "keywords": []
 }
