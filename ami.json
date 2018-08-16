@@ -8,6 +8,7 @@
             "sudo /usr/bin/yum -y install gcc-c++ make",
             "curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -",
             "sudo /usr/bin/yum -y install nodejs",
+            "sudo npm install pm2 -g",
             "sudo mkdir -p /usr/local/node-app",
             "sudo chown ec2-user:ec2-user /usr/local/node-app"
         ]
@@ -23,10 +24,8 @@
             "cd /usr/local/node-app",
             "npm init -f",
             "npm install",
-            "sudo cp node-app.service /etc/systemd/system/.",
-            "sudo systemctl daemon-reload",
-            "sudo systemctl start node-app",
-            "sudo systemctl enable node-app"
+            "chmod +x app.js",
+            "pm2 start ./bin/www --name='app'"
         ]
     }
   ],
