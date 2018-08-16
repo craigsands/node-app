@@ -17,15 +17,16 @@ pipeline {
     }
     stage('Build') {
       steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
+        withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
           sh 'echo $AWS_ACCESS_KEY_ID'
           sh 'echo $AWS_SECRET_ACCESS_KEY'
           sh 'whoami'
           sh 'pwd'
           sh 'ls -l'
           sh 'packer validate node-app/ami.json'
-          sh 'echo \'hi\' #packer build node-app/ami.json'
+          sh 'packer build node-app/ami.json'
         }
+
       }
     }
     stage('Deploy') {
