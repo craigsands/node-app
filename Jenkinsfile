@@ -22,8 +22,8 @@ pipeline {
         sh 'pwd'
         sh 'ls -l'
         sh 'packer validate node-app/ami.json'
-        sh 'ls -l /'
-        sh 'ls -l /root/'
+        sh 'ls -la /'
+        sh 'ls -la /root/'
         sh 'packer build node-app/ami.json'
       }
     }
