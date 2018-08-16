@@ -1,5 +1,11 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'goforgold/build-container:latest'
+      args '-v /aws/credentials:/root/aws/credentials'
+    }
+
+  }
   stages {
     stage('Clone') {
       steps {
@@ -15,8 +21,8 @@ pipeline {
         sh 'whoami'
         sh 'pwd'
         sh 'ls -l'
-        sh 'docker run hashicorp/packer validate $(ls -l)'
-        sh 'docker run -v /aws/credentials:/root/aws/credentials hashicorp/packer build ami.json'
+        sh 'packer validate node-app/ami.json'
+        sh 'packer build node-app/ami.json'
       }
     }
     stage('Deploy') {
