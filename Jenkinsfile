@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'alpine:latest'
+      image 'goforgold/build-container'
     }
 
   }
@@ -9,6 +9,7 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building'
+        sh 'terraform init'
       }
     }
     stage('Test') {
