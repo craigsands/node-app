@@ -8,7 +8,8 @@
             "sudo /usr/bin/yum -y install gcc-c++ make",
             "curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -",
             "sudo /usr/bin/yum -y install nodejs",
-            "mkdir -p /usr/local/node-app"
+            "sudo mkdir -p /usr/local/node-app",
+            "sudo chown ec2-user:ec2-user /usr/local/node-app"
         ]
     },
     {

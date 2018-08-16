@@ -24,7 +24,7 @@ pipeline {
           sh 'pwd'
           sh 'ls -l'
           sh 'packer validate node-app/ami.json'
-          sh 'packer build node-app/ami.json'
+          sh 'packer build -force -on-error=abort node-app/ami.json'
         }
 
       }
