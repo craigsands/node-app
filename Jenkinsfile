@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'goforgold/build-container'
-    }
-
-  }
+  agent none
   stages {
     stage('Clone') {
       steps {
