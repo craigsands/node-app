@@ -24,8 +24,7 @@
             "cd /usr/local/node-app",
             "npm init -f",
             "npm install",
-            "chmod +x app.js",
-            "pm2 start ./bin/www --name='app'"
+            "chmod +x app.js"
         ]
     }
   ],
