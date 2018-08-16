@@ -24,6 +24,7 @@ pipeline {
         sh 'packer validate node-app/ami.json'
         sh 'ls -l /'
         sh 'ls -l /root/'
+        sh 'packer build node-app/ami.json'
       }
     }
     stage('Deploy') {
