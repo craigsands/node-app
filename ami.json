@@ -1,18 +1,13 @@
 {
-  "variables": {
-    "aws_access_key": "",
-    "aws_secret_key": ""
-  },
-
   "provisioners": [
     {
         "type": "shell",
         "inline": [
             "sleep 30",
-            "/usr/bin/yum -y update",
-            "/usr/bin/yum -y install gcc-c++ make",
+            "sudo /usr/bin/yum -y update",
+            "sudo /usr/bin/yum -y install gcc-c++ make",
             "curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -",
-            "/usr/bin/yum -y install nodejs",
+            "sudo /usr/bin/yum -y install nodejs",
             "mkdir -p /usr/local/node-app"
         ]
     },
@@ -34,8 +29,6 @@
 
   "builders": [{
     "type": "amazon-ebs",
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-1",
     "source_ami_filter": {
       "filters": {
@@ -47,7 +40,7 @@
       "most_recent": true
     },
     "instance_type": "t2.micro",
-    "ssh_username": "root",
+    "ssh_username": "ec2-user",
     "ami_name": "node-app-{{timestamp}}"
   }]
 }
