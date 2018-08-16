@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'goforgold/build-container:latest'
-      args '-v /aws/credentials:/root/.aws/credentials'
+      args '-v /aws/:/root/.aws/'
     }
 
   }
