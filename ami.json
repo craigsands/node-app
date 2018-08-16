@@ -40,7 +40,7 @@
       "owners": ["137112412989"],
       "most_recent": true
     },
-    "instance_type": "t2.micro",
+    "instance_type": "t2.small",
     "ssh_username": "ec2-user",
     "ami_name": "node-app-{{timestamp}}"
   }]
