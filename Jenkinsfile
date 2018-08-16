@@ -11,19 +11,12 @@ pipeline {
       }
     }
     stage('Build') {
-      agent {
-        docker {
-          image 'hashicorp/packer:light'
-          args '-v /aws/credentials:/root/aws/credentials'
-        }
-
-      }
       steps {
         sh 'whoami'
         sh 'pwd'
         sh 'ls -l'
-        sh 'packer validate ami.json'
-        sh 'packer build ami.json'
+        sh 'docker run -i -t hashicorp/packer validate ami.json'
+        sh 'docker run -i -t -v /aws/credentials:/root/aws/credentials hashicorp/packer build ami.json'
       }
     }
     stage('Deploy') {
