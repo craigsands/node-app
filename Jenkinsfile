@@ -6,15 +6,23 @@ pipeline {
 
   }
   stages {
-    stage('Build') {
+    stage('Clone') {
       steps {
-        echo 'Building'
-        sh 'terraform init'
+        sh 'rm -rf node-app'
+        sh 'git clone https://github.com/craigsands/node-app'
       }
     }
-    stage('Test') {
+    stage('Build') {
+      agent {
+        docker {
+          image 'hashicorp/packer:light'
+          args '-i -t'
+        }
+
+      }
       steps {
-        echo 'Testing'
+        sh 'packer validate ami.json'
+        sh 'packer build ami.json'
       }
     }
     stage('Deploy') {
