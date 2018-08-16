@@ -12,15 +12,15 @@ pipeline {
         sh 'git clone https://github.com/craigsands/node-app'
       }
     }
-    stage('Build') {
-      steps {
-        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
-        withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
-          sh 'packer validate node-app/ami.json'
-          sh 'packer build node-app/ami.json'
-        }
-      }
-    }
+//    stage('Build') {
+//      steps {
+//        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+//        withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
+//          sh 'packer validate node-app/ami.json'
+//          sh 'packer build node-app/ami.json'
+//        }
+//      }
+//    }
     stage('Deploy') {
       steps {
         // https://jenkins.io/doc/pipeline/steps/credentials-binding/
