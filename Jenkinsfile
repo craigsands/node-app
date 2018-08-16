@@ -9,10 +9,11 @@ pipeline {
   stages {
     stage('test') {
       steps {
-          withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
-            sh 'env'
-            sh 'aws s3 ls'
-          }
+        withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
+          sh 'env'
+          sh 'aws s3 ls'
+        }
+
       }
     }
     stage('Clone') {
