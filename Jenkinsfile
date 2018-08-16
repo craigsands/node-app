@@ -8,30 +8,44 @@ pipeline {
   stages {
     stage('Clone') {
       steps {
-        sh 'whoami'
-        sh 'pwd'
-        sh 'ls -l'
         sh 'rm -rf node-app'
         sh 'git clone https://github.com/craigsands/node-app'
       }
     }
     stage('Build') {
       steps {
+        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
         withCredentials(bindings: [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
-          sh 'echo $AWS_ACCESS_KEY_ID'
-          sh 'echo $AWS_SECRET_ACCESS_KEY'
-          sh 'whoami'
-          sh 'pwd'
-          sh 'ls -l'
           sh 'packer validate node-app/ami.json'
-          sh 'packer build -force -on-error=abort node-app/ami.json'
+          sh 'packer build node-app/ami.json'
         }
 
       }
     }
     stage('Deploy') {
       steps {
-        echo 'Deploying'
+        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+        withCredentials(bindings: [
+          [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials'],
+          [usernamePassword(
+            credentialsId: 'node-app-git-credentials',
+            usernameVariable: 'REPO_USER',
+            passwordVariable: 'REPO_PASS'
+          )]
+        ]) {
+          sh '''
+            cd node-app
+            terraform init config
+            terraform apply -auto-approve config
+            git add terraform.tfstate
+            git \
+              -c user.name="Craig Sands" \
+              -c user.email="craigsands@gmail.com" \
+              commit \
+              -m "terraform state update from Jenkins"
+            git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master
+          '''
+        }
       }
     }
   }
