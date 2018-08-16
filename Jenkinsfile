@@ -7,6 +7,12 @@ pipeline {
 
   }
   stages {
+    stage('test') {
+      withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'node-app-aws-credentials']]) {
+        sh 'env'
+        sh 'aws s3 ls'
+      }
+    }
     stage('Clone') {
       steps {
         sh 'whoami'
