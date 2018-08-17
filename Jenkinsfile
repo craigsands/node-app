@@ -34,16 +34,17 @@ pipeline {
             passwordVariable: 'REPO_PASS'
         ]]) {
           sh '''
+            env
             cd node-app
-            terraform init config
-            terraform apply -auto-approve config
-            git add terraform.tfstate
-            git \
-              -c user.name="Craig Sands" \
-              -c user.email="craigsands@gmail.com" \
-              commit \
-              -m "terraform state update from Jenkins"
-            git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master
+//            terraform init config
+//            terraform apply -auto-approve config
+//            git add terraform.tfstate
+//            git \
+//              -c user.name="Craig Sands" \
+//              -c user.email="craigsands@gmail.com" \
+//              commit \
+//              -m "terraform state update from Jenkins"
+//            git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master
           '''
         }
       }
