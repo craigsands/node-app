@@ -42,8 +42,31 @@ docker exec -it docker-jenkins ^
   /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
 ```
 
+### Create credential entries
+
+AWS
+
+**images
+
+Github
+
+**images
+
+### Create pipeline from Github repo
+
+**images
+
+### Remove project
+
+Get latest `terraform.tfstate` file
+
+```git pull```
+
+Destroy the deployment
+
 ```
-npm init -f
-npm install
-npm start
+terraform init config
+terraform destroy -auto-approve config
 ```
+
+(Don't forget to deregister the AMI)
