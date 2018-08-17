@@ -33,12 +33,12 @@ pipeline {
             usernameVariable: 'REPO_USER',
             passwordVariable: 'REPO_PASS'
         ]]) {
-//            terraform apply -auto-approve config
           sh '''
             env
             cd node-app
             touch terraform.tfstate
             terraform init config
+            terraform apply -auto-approve config
             git add terraform.tfstate
             git \
               -c user.name="Craig Sands" \

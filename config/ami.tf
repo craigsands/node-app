@@ -3,7 +3,6 @@ data "aws_ami" "node_app" {
 
   filter {
     name   = "name"
-    values = ["node-app*"]
+    values = ["node-app-*"]
   }
-  owners = ["014585017154"]
 }
