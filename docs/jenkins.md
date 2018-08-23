@@ -43,14 +43,14 @@ Note: Since Jenkins will be running in docker, and docker will also be utilized 
 
 ### Get admin password
 
-![](static/unlock.jpg)
+<img src="static/unlock.jpg" width="400">
 
 The admin password for Jenkins is created when the container is started with a new volume. If running Jenkins in the foreground, you'll get the following message toward the end of the output:
 
 ```bash
 Please use the following password to proceed to installation:
 
-********************************
+(redacted)
 
 This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 ```
