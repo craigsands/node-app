@@ -81,3 +81,15 @@ terraform destroy -auto-approve config
 ```
 
 (Don't forget to deregister the AMI)
+
+
+
+### Create new branch
+git branch {branchname}
+git checkout {branchname}
+
+Validate with git branch -a
+
+git add .
+git commit -m {message}
+git push
