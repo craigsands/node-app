@@ -2,56 +2,21 @@
 
 This repository demonstrates the pipeline to deploy a simple web application.
 
-Using Jenkins, an open source automation server, application code can be
-committed to a git repository and then a deployed to AWS using Hashicorp's
-Packer and Terraform.
+Using Jenkins, an open source automation server, application code can be committed to a git repository and then a deployed to AWS using Hashicorp's
+Packer and Terraform. Since Terraform creates a CloudFormation stack in AWS, additional commits to modify the application will trigger rolling updates and automatically update the instances in the stack.
+
+Git -> Jenkins -> Packer -> Terraform -> Git
 
 ![Packer](docs/static/Packer_PrimaryLogo_FullColor.png)
 
-### Start Jenkins
+#### Prerequisites
 
-Linux:
+- [docker]()
 
-```bash
-docker run \
-  --rm \
-  --name docker-jenkins \
-  -u root \
-  -p 8080:8080 \
-  -v jenkins-data:/var/jenkins_home \ 
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  jenkinsci/blueocean
-```
+## Setup
 
+1. [Start Jenkins](docs/jenkins.md)
 
-Windows:
-
-```
-docker run ^
-  --rm ^
-  --name docker-jenkins ^
-  -u root ^
-  -p 8080:8080 ^
-  -v jenkins-data:/var/jenkins_home ^ 
-  -v /var/run/docker.sock:/var/run/docker.sock ^
-  jenkinsci/blueocean
-```
-
-### Get admin password
-
-Linux
-
-```bash
-docker exec -it docker-jenkins \
-  /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
-```
-
-Windows
-
-```bash
-docker exec -it docker-jenkins ^
-  /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
-```
 
 ### Create credential entries
 
