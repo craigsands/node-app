@@ -3,7 +3,10 @@
 This repository demonstrates the pipeline to deploy a simple web application.
 
 Using Jenkins, an open source automation server, application code can be
-committed to a git repository and then a deployed to AWS
+committed to a git repository and then a deployed to AWS using Hashicorp's
+Packer and Terraform.
+
+![Packer](docs/static/Packer_PrimaryLogo_FullColor.png)
 
 ### Start Jenkins
 
