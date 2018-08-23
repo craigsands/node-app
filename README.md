@@ -89,3 +89,7 @@ git branch {branchname}
 git checkout {branchname}
 
 Validate with git branch -a
+
+git add .
+git commit -m {message}
+git push
