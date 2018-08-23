@@ -10,23 +10,26 @@ committed to a git repository and then a deployed to AWS
 Linux:
 
 ```bash
-docker run -it \
+docker run \
+  --rm \
   --name docker-jenkins \
-  -p 8080:8080 \
   -u root \
-  -v ./jenkins_home:/var/jenkins_home \
+  -p 8080:8080 \
+  -v jenkins-data:/var/jenkins_home \ 
   -v /var/run/docker.sock:/var/run/docker.sock \
   jenkinsci/blueocean
 ```
 
+
 Windows:
 
 ```
-docker run -it ^
+docker run ^
+  --rm ^
   --name docker-jenkins ^
-  -p 8080:8080 ^
   -u root ^
-  -v ./jenkins_home:/var/jenkins_home ^
+  -p 8080:8080 ^
+  -v jenkins-data:/var/jenkins_home ^ 
   -v /var/run/docker.sock:/var/run/docker.sock ^
   jenkinsci/blueocean
 ```
