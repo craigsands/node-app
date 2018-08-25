@@ -2,51 +2,34 @@
 
 This repository demonstrates the pipeline to deploy a simple web application.
 
-Using Jenkins, an open source automation server, application code can be committed to a git repository and then a deployed to AWS using Hashicorp's
-Packer and Terraform. Since Terraform creates a CloudFormation stack in AWS, additional commits to modify the application will trigger rolling updates and automatically update the instances in the stack.
+Using Jenkins, an open source automation server, application code can be committed to a git repository and then a deployed to AWS using Hashicorp's Packer and Terraform. Since Terraform creates a CloudFormation stack in AWS, additional commits to modify the application will trigger rolling updates and automatically update the instances in the stack.
 
 Git -> Jenkins -> Packer -> Terraform -> Git
 
-![Packer](docs/static/Packer_PrimaryLogo_FullColor.png)
-
 #### Prerequisites
 
-- [docker]()
+- [docker](https://www.docker.com/)
+
+Everything required to deploy this application is contained in this repository. Any steps requiring external applications other than Docker (i.e., Jenkins, Packer, Ansible, Terraform) have been configured to use containerized versions for convenience.
 
 ## Setup
 
-1. [Start Jenkins](docs/jenkins.md)
+1. Fork this repository
+2. [Configure Jenkins](docs/jenkins.md)
+3. [Create a pipeline](docs/pipeline.md)
+  a. [Build the container](docs/container.md) agent
+  a. Clone this repository
+  b. [Build with Packer](docs/packer.md)
+    1. [Provision with Ansible](docs/ansible.md)
+  c. [Deploy with Terraform](docs/terraform.md)
+  d. Push terraform.tfstate
 
+## Removal
 
-### Create credential entries
-
-AWS
-
-**images
-
-Github
-
-**images
-
-### Create pipeline from Github repo
-
-**images
-
-### Remove project
-
-Get latest `terraform.tfstate` file
-
-```git pull```
-
-Destroy the deployment
-
-```
-terraform init config
-terraform destroy -auto-approve config
-```
-
-(Don't forget to deregister the AMI)
-
+# Build the container that includes Terraform locally
+docker build . -t build-container
+docker run ??
+docker cp terraform.tfstate build-container:/terraform.tfstate
 
 
 ### Create new branch

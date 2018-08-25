@@ -1,48 +1,48 @@
 {
-  "provisioners": [
+  "builders": [
     {
-        "type": "shell",
-        "inline": [
-            "sleep 30",
-            "sudo /usr/bin/yum -y update",
-            "sudo /usr/bin/yum -y install gcc-c++ make",
-            "curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -",
-            "sudo /usr/bin/yum -y install nodejs",
-            "sudo npm install pm2 -g",
-            "sudo mkdir -p /usr/local/node-app",
-            "sudo chown ec2-user:ec2-user /usr/local/node-app"
+      "ami_name": "node-app-{{timestamp}}",
+      "instance_type": "t2.small",
+      "region": "us-east-1",
+      "source_ami_filter": {
+        "filters": {
+          "name": "amzn-ami-hvm-*",
+          "root-device-type": "ebs",
+          "virtualization-type": "hvm"
+        },
+        "most_recent": true,
+        "owners": [
+          "137112412989"
         ]
-    },
-    {
-      "type": "file",
-      "source": ".",
-      "destination": "/usr/local/node-app"
-    },
-    {
-        "type": "shell",
-        "inline": [
-            "cd /usr/local/node-app",
-            "npm init -f",
-            "npm install",
-            "chmod +x app.js"
-        ]
+      },
+      "ssh_username": "ec2-user",
+      "type": "amazon-ebs"
     }
   ],
-
-  "builders": [{
-    "type": "amazon-ebs",
-    "region": "us-east-1",
-    "source_ami_filter": {
-      "filters": {
-        "virtualization-type": "hvm",
-        "name": "amzn-ami-hvm-*",
-        "root-device-type": "ebs"
-      },
-      "owners": ["137112412989"],
-      "most_recent": true
+  "post-processors": [],
+  "provisioners": [
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
+      "playbook_file": "playbook.yml",
+      "type": "ansible",
+      "user": "centos"
     },
-    "instance_type": "t2.small",
-    "ssh_username": "ec2-user",
-    "ami_name": "node-app-{{timestamp}}"
-  }]
+    {
+      "destination": "/usr/local/node-app",
+      "source": ".",
+      "type": "file"
+    },
+    {
+      "inline": [
+        "cd /usr/local/node-app",
+        "npm init -f",
+        "npm install",
+        "chmod +x app.js"
+      ],
+      "type": "shell"
+    }
+  ]
 }
+

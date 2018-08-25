@@ -1,8 +1,8 @@
-# Jenkins
+# Configure Jenkins
 
 This guide uses the docker container for Jenkins' [Blue Ocean](https://jenkins.io/projects/blueocean/), specifically designed as a simplified GUI for the Jenkins Pipeline.
 
-## Setup
+## Installation
 
 [Jenkins](https://jenkins.io/) can be run as a remote server, or in this case, locally using [docker](https://www.docker.com/).
 
@@ -57,16 +57,70 @@ This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 
 If running Jenkins in the background, you can access the admin password with this command:
 
-Linux
+##### Linux
 
 ```bash
 docker exec -it docker-jenkins \
   /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
 ```
 
-Windows
+##### Windows
 
 ```bash
 docker exec -it docker-jenkins ^
   /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
 ```
+
+### Install default plugins
+
+Selecting the default plugins is fine for now, only one other plugin is required, which will be installed later.
+
+<img src="static/customize.jpg" width="400">
+
+<img src="static/default-plugins.jpg" width="400">
+
+### Finish installation
+
+Create a user account for Jenkins, or continue using as 'admin' with the admin password from earlier.
+
+<img src="static/continue-as-admin.jpg" width="400">
+
+Since Jenkins is running in a container with port 8080 mapped, the URL [http://localhost:8080](http://localhost:8080) is fine.
+
+<img src="static/url.jpg" width="400">
+
+<img src="static/jenkins-home.jpg" width="400">
+
+### Install CloudBees AWS Credentials plugin
+
+The only required plugin, CloudBees AWS Credentials will allow binding AWS credentials to steps in the pipeline so that Packer and Terraform can access AWS as an IAM user. In the Jenkins side menu, click 'Manage Jenkins', scroll down halfway, and click 'Manage Plugins'.
+
+<img src="static/manage-plugins.jpg" width="400">
+
+Select the available tab, and enable the CloudBees Amazon Web Services Credentials plugin. Then click 'Install without restart'.
+
+<img src="static/cloudbees-aws-credentials-plugin.jpg" width="400">
+
+### Add credentials to Jenkins
+
+<img src="static/credentials-home.jpg" width="400">
+
+In the credentials section, you can click the down arrow next to the Jenkins Provider's (global) store. Or click directly on the Jenkins Provider, and there is a option to 'Add Credentials' in the left menu. 
+
+<img src="static/credentials-global.jpg" width="400">
+
+#### Github
+
+To allow Jenkins (and the build-container agent) access to checkout this repository from Github, enter a Github username and personal access token for the password. Use 'node-app-git-credentials' as the ID, as it is referenced in the Jenkinsfile (pipeline).
+
+<img src="static/git-credentials.jpg" width="400">
+
+#### AWS
+
+Follow the same steps above, then select 'AWS Credentials' from the 'Kind' dropdown. Use 'node-app-aws-credentials' as the ID, as it is referenced in the Jenkinsfile (pipeline). Note: No modifications to 'Advanced...' settings or 'IAM Role Support' are required.
+
+<img src="static/aws-credentials.jpg" width="400">
+
+## Next Steps
+
+- Create a [pipeline](docs/pipeline.md)
