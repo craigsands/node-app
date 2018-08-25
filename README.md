@@ -17,12 +17,12 @@ Everything required to deploy this application is contained in this repository. 
 1. Fork this repository
 2. [Configure Jenkins](docs/jenkins.md)
 3. [Create a pipeline](docs/pipeline.md)
-    a. [Build the container](docs/container.md) agent
-    b. Clone this repository
-    c. [Build with Packer](docs/packer.md)
+    1. [Build the container](docs/container.md) agent
+    2. Clone this repository
+    3. [Build with Packer](docs/packer.md)
         1. [Provision with Ansible](docs/ansible.md)
-    d. [Deploy with Terraform](docs/terraform.md)
-    e. Push terraform.tfstate
+    4. [Deploy with Terraform](docs/terraform.md)
+    5. Push terraform.tfstate
 
 ## Removal
 
