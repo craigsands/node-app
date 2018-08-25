@@ -41,7 +41,7 @@ After startup, the server's web portal can be accessed via [http://localhost:808
 
 Note: Since Jenkins will be running in docker, and docker will also be utilized within the Jenkins pipeline to run [Packer](https://www.packer.io/) and [Terraform](https://www.terraform.io/), it is also important to mount `docker.sock` from the host. That way, the docker controller in Jenkins uses the host's docker daemon to run its containers.
 
-### Get admin password
+### Get the admin password
 
 <img src="static/unlock.jpg" width="400">
 
@@ -81,7 +81,7 @@ Selecting the default plugins is fine for now, only one other plugin is required
 
 ### Finish installation
 
-Create a user account for Jenkins, or continue using as 'admin' with the admin password from earlier.
+Create a user account for Jenkins, or 'Continue as admin' (bottom right) with the admin password from earlier.
 
 <img src="static/continue-as-admin.jpg" width="400">
 
@@ -103,24 +103,26 @@ Select the available tab, and enable the CloudBees Amazon Web Services Credentia
 
 ### Add credentials to Jenkins
 
+In the credentials section, you can click the down arrow next to the Jenkins Provider's (global) store.
+
 <img src="static/credentials-home.jpg" width="400">
 
-In the credentials section, you can click the down arrow next to the Jenkins Provider's (global) store. Or click directly on the Jenkins Provider, and there is a option to 'Add Credentials' in the left menu. 
+Or click directly on the Jenkins Provider, and there is a option to 'Add Credentials' in the left menu. 
 
 <img src="static/credentials-global.jpg" width="400">
 
 #### Github
 
-To allow Jenkins (and the build-container agent) access to checkout this repository from Github, enter a Github username and personal access token for the password. Use 'node-app-git-credentials' as the ID, as it is referenced in the Jenkinsfile (pipeline).
+To allow Jenkins (and the build-container agent) access to checkout this repository from Github, enter a Github username and personal access token for the password. Use 'node-app-git-credentials' as the ID, as it is referenced in the [Jenkinsfile](../Jenkinsfile).
 
 <img src="static/git-credentials.jpg" width="400">
 
 #### AWS
 
-Follow the same steps above, then select 'AWS Credentials' from the 'Kind' dropdown. Use 'node-app-aws-credentials' as the ID, as it is referenced in the Jenkinsfile (pipeline). Note: No modifications to 'Advanced...' settings or 'IAM Role Support' are required.
+Follow the same steps above, then select 'AWS Credentials' from the 'Kind' dropdown. Use 'node-app-aws-credentials' as the ID, as it is referenced in the [Jenkinsfile](../Jenkinsfile). Note: No modifications to 'Advanced...' settings or 'IAM Role Support' are required.
 
 <img src="static/aws-credentials.jpg" width="400">
 
 ## Next Steps
 
-- Create a [pipeline](docs/pipeline.md)
+- Create a [pipeline](pipeline.md)

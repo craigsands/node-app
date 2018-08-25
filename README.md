@@ -23,21 +23,3 @@ Everything required to deploy this application is contained in this repository. 
         1. [Provision with Ansible](docs/ansible.md)
     4. [Deploy with Terraform](docs/terraform.md)
     5. Push terraform.tfstate
-
-## Removal
-
-# Build the container that includes Terraform locally
-docker build . -t build-container
-docker run ??
-docker cp terraform.tfstate build-container:/terraform.tfstate
-
-
-### Create new branch
-git branch {branchname}
-git checkout {branchname}
-
-Validate with git branch -a
-
-git add .
-git commit -m {message}
-git push
