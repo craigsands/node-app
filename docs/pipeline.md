@@ -10,6 +10,6 @@
 
 <img src="static/repository.jpg" width="400">
 
-<img src="static/create-pipeline.jpg" width="400">
+<img src="static/creating-pipeline.jpg" width="400">
 
 <img src="static/first-pipeline.jpg" width="400">
