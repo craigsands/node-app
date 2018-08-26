@@ -38,7 +38,13 @@ Once the pipeline is created, Jenkins will start the pipeline.
 
 You can then click on it to view the status step-by-step.
 
-<img src="static/first-pipeline.jpg" width="400">
+<img src="static/pipeline-in-progress.jpg" width="400">
+
+<img src="static/pipeline-complete.jpg" width="400">
+
+Following a successful deployment, the node-app can be accessed by its AWS ELB (Elastic Load Balancer).
+
+<img src="static/deployed-app.jpg" width="400">
 
 ## Next Steps
 
