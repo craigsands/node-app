@@ -22,7 +22,7 @@ pipeline {
 
 An [agent](https://jenkins.io/doc/book/pipeline/syntax/#agent) at the top-level defines what environment the pipeline will run in. Specifying `dockerfile true` instructs Jenkins to build an image from the included [Dockerfile](../Dockerfile) in the root of the repository. Since deploying this application requires Git, Packer, [Ansible](https://www.ansible.com/), and Terraform, the Dockerfile includes the instructions for installing those prerequisites in the docker image.
 
-The remainder of the Jenkinsfile contains the stages (with arbitrary names) and steps needed to complete the deployment process. These stages and steps are all completed within the docker image (agent) container that was built and started earlier.
+The remainder of the Jenkinsfile contains the stages (with arbitrary names) and steps needed to complete the deployment process. These stages and steps are all completed within the docker image (agent) container.
 
 ## Clone
 
@@ -80,7 +80,7 @@ stage('Deploy') {
 
 ## Commit
 
-After the deployment process is complete, Terraform writes the state to the `terraform.tfstate` file. This file can then be committed to the original (or another) repository for reference and version control. Since committing the file to Github, the `UsernamePasswordMultiBinding` class is used (directly referenced by the ID `node-app-git-credentials`) to allow the step to push the Terraform state file into the repository. Unlike the CloudBees AWS credentials plugin, variables for the username and password are explicitly defined (in this case `REPO_USER` and `REPO_PASS`), and then used in the following shell steps.
+After the deployment process is complete, Terraform writes data for each AWS object created to the `terraform.tfstate` file. This file can then be committed to the original (or another) repository for reference and version control. Since committing the file to Github, the `UsernamePasswordMultiBinding` class is used (directly referenced by the ID `node-app-git-credentials`) to allow the step to push the Terraform state file into the repository. Unlike the CloudBees AWS credentials plugin, variables for the username and password are explicitly defined (in this case `REPO_USER` and `REPO_PASS`), and then used in the following shell steps.
 
 ```
 stage('Commit') {
