@@ -28,7 +28,6 @@ pipeline {
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'node-app-aws-credentials'
         ]]) {
-          sh 'pwd'
           sh 'cd node-app'
           sh 'terraform init config'
           sh 'terraform apply -auto-approve config'
@@ -44,7 +43,6 @@ pipeline {
             usernameVariable: 'REPO_USER',
             passwordVariable: 'REPO_PASS'
         ]]) {
-          sh 'pwd'
           sh 'cd node-app'
           sh 'git add terraform.tfstate'
           sh '''

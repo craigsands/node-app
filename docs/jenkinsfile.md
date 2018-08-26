@@ -39,7 +39,7 @@ stage('Clone') {
 
 ## Build
 
-The second stage builds the AWS AMI using Packer. Since Packer requires access to AWS, the Jenkinsfile includes a class `AmazonWebServicesCredentialsBinding` to bind the AWS credentials specified previously in the Jenkins Credentials section. The credentials are directly referenced by the ID `node-app-aws-credentials`, entered when specifying the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY. The `AmazonWebServicesCredentialsBinding` class is provided by the [CloudBees Amazon Web Services Credentials](https://plugins.jenkins.io/aws-credentials) plugin.
+The second stage builds the AWS AMI using Packer. Since Packer requires access to AWS, the Jenkinsfile includes a class `AmazonWebServicesCredentialsBinding` to bind the AWS credentials specified previously in the Jenkins Credentials section. The credentials are directly referenced by the ID `node-app-aws-credentials`, entered when specifying the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY. The `AmazonWebServicesCredentialsBinding` class is provided by the [CloudBees Amazon Web Services Credentials](https://plugins.jenkins.io/aws-credentials) plugin, and automatically adds the credentials as environment variables.
 
 With the credentials provided, this step uses shell commands to validate the [template file](../ami.json) and build the AMI.
 
@@ -60,6 +60,8 @@ stage('Build') {
 
 ## Deploy
 
+The deploy stage again binds AWS credentials so that Terraform can build the appropriate resources in AWS. Since the build container is built on demand, the config directory is initialized with Terraform first, then applied. The [Terraform code](../config) references the AMI built in the previous step to use in the deployment.
+
 ```
 stage('Deploy') {
   steps {
@@ -77,6 +79,8 @@ stage('Deploy') {
 ```
 
 ## Commit
+
+After the deployment process is complete, Terraform writes the state to the `terraform.tfstate` file. This file can then be committed to the original (or another) repository for reference and version control. Since committing the file to Github, the `UsernamePasswordMultiBinding` class is used (directly referenced by the ID `node-app-git-credentials`) to allow the step to push the Terraform state file into the repository. Unlike the CloudBees AWS credentials plugin, variables for the username and password are explicitly defined (in this case `REPO_USER` and `REPO_PASS`), and then used in the following shell steps.
 
 ```
 stage('Commit') {
