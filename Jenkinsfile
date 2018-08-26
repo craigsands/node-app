@@ -6,7 +6,7 @@ pipeline {
     stage('Clone') {
       steps {
         sh 'rm -rf node-app'
-        git url: 'https://github.com/craigsands/node-app'
+        sh 'git clone https://github.com/craigsands/node-app'
       }
     }
     stage('Build') {
@@ -43,16 +43,16 @@ pipeline {
             usernameVariable: 'REPO_USER',
             passwordVariable: 'REPO_PASS'
         ]]) {
+          sh 'cd node-app'
+          sh 'git add terraform.tfstate'
           sh '''
-            cd node-app
-            git add terraform.tfstate
             git \
               -c user.name="Craig Sands" \
               -c user.email="craigsands@gmail.com" \
               commit \
               -m "terraform state update from Jenkins"
-            git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master
           '''
+          sh 'git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master'
         }
       }
     }
