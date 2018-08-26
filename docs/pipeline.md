@@ -42,4 +42,4 @@ You can then click on it to view the status step-by-step.
 
 ## Next Steps
 
-- [Understanding the Jenkinsfile](jenkinsfile.md)
+- [Understand the Jenkinsfile](jenkinsfile.md)
