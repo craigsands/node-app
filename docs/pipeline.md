@@ -32,4 +32,14 @@ Otherwise, the pipeline will be built from the Jenkinsfile. (This repository, 'n
 
 <img src="static/creating-pipeline.jpg" width="400">
 
+Once the pipeline is created, Jenkins will start the pipeline.
+
 <img src="static/first-pipeline.jpg" width="400">
+
+You can then click on it to view the status step-by-step.
+
+<img src="static/first-pipeline.jpg" width="400">
+
+## Next Steps
+
+- [Understanding the Jenkinsfile](jenkinsfile.md)

@@ -1,9 +1,6 @@
 pipeline {
   agent {
-    docker {
-      image 'goforgold/build-container:latest'
-    }
-
+    dockerfile true
   }
   stages {
     stage('Clone') {
