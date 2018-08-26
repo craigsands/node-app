@@ -24,11 +24,11 @@ After importing a Github personal access token, select the appropriate organizat
 
 <img src="static/repository.jpg" width="400">
 
-Jenkins then searches the repository for an existing Jenkinsfile. If none exist in the repository selected, Jenkins will start a new one.
+Jenkins then searches the repository for an existing Jenkinsfile. If none exist in the repository selected, Jenkins will start a new one. (In the below screenshot, a separate project, 'docker-jenkins', did not contain a Jenkinsfile.)
 
 <img src="static/new-pipeline.jpg" width="400">
 
-Otherwise, the pipeline will be built from the Jenkinsfile.
+Otherwise, the pipeline will be built from the Jenkinsfile. (This repository, 'node-app' has one in the project root.)
 
 <img src="static/creating-pipeline.jpg" width="400">
 
