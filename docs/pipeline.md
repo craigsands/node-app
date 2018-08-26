@@ -1,8 +1,6 @@
 # Create a pipeline
 
-A pipeline is the CI/CD component of Jenkins. The [Jenkinsfile](jenkinsfile.md) is the declarative representation of a pipeline, with the advantage that it can be checked into source control and tracked. See [https://jenkins.io/doc/book/pipeline/jenkinsfile/](https://jenkins.io/doc/book/pipeline/jenkinsfile/) for more information on creating a Jenkinsfile from scratch.
-
-Jenkins' Blue Ocean makes creating pipelines (and their Jenkinsfile representations) simple. User's can create a pipeline from a straightforward UI, and then export that pipeline as a Jenkinsfile.
+A pipeline is the CI/CD component of Jenkins. Jenkins' Blue Ocean makes creating pipelines (and their Jenkinsfile representations) simple. User's can create a pipeline from a straightforward UI, and then export that pipeline as a [Jenkinsfile](jenkinsfile.md).
 
 <img src="static/jenkins-home.jpg" width="400">
 

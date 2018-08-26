@@ -19,7 +19,7 @@ Everything required to deploy this application is contained in this repository. 
 3. [Create a pipeline](docs/pipeline.md)
     1. Import a [Jenkinsfile](docs/jenkinsfile.md) if present, or
     2. Add steps using the Blue Ocean UI
-        1. [Build the container](docs/container.md) agent
+        1. Build the container agent from a [Dockerfile](Dockerfile)
         2. Clone this repository
         3. Build with [Packer](https://www.packer.io/)
             1. Provision with [Ansible](https://www.ansible.com/)

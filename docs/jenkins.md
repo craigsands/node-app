@@ -97,7 +97,7 @@ The only required plugin, CloudBees AWS Credentials will allow binding AWS crede
 
 <img src="static/manage-plugins.jpg" width="400">
 
-Select the available tab, and enable the CloudBees Amazon Web Services Credentials plugin. Then click 'Install without restart'.
+Select the available tab, and enable the [CloudBees Amazon Web Services Credentials](https://plugins.jenkins.io/aws-credentials) plugin. Then click 'Install without restart'.
 
 <img src="static/cloudbees-aws-credentials-plugin.jpg" width="400">
 

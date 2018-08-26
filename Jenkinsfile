@@ -6,7 +6,7 @@ pipeline {
     stage('Clone') {
       steps {
         sh 'rm -rf node-app'
-        sh 'git clone https://github.com/craigsands/node-app'
+        git url: 'https://github.com/craigsands/node-app'
       }
     }
     stage('Build') {
@@ -27,18 +27,24 @@ pipeline {
         withCredentials([[
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'node-app-aws-credentials'
-          ], [
+        ]]) {
+          sh 'cd node-app'
+          sh 'terraform init config'
+          sh 'terraform apply -auto-approve config'
+        }
+      }
+    }
+    stage('Commit') {
+      steps {
+        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+        withCredentials([[
             $class: 'UsernamePasswordMultiBinding',
             credentialsId: 'node-app-git-credentials',
             usernameVariable: 'REPO_USER',
             passwordVariable: 'REPO_PASS'
         ]]) {
           sh '''
-            env
             cd node-app
-            touch terraform.tfstate
-            terraform init config
-            terraform apply -auto-approve config
             git add terraform.tfstate
             git \
               -c user.name="Craig Sands" \
