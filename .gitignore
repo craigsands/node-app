@@ -1,2 +1,4 @@
 .terraform/
+config/backend/.terraform/
+config/node-app/.terraform/
 node_modules/

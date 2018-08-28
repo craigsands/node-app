@@ -3,7 +3,7 @@
     {
       "ami_name": "node-app-{{timestamp}}",
       "instance_type": "t2.small",
-      "region": "us-east-1",
+      "region": "{{user `aws_region`}}",
       "source_ami_filter": {
         "filters": {
           "name": "amzn-ami-hvm-*",
@@ -43,6 +43,9 @@
       ],
       "type": "shell"
     }
-  ]
+  ],
+  "variables": {
+    "aws_region": "us-east-1"
+  }
 }
 

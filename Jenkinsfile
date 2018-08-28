@@ -2,6 +2,11 @@ pipeline {
   agent {
     dockerfile true
   }
+  environment {
+    AWS_REGION = 'us-east-1'
+    S3_BUCKET_NAME  = 'node-app-tf-state-Nm1RUznHbx2lsULMqzgMrxUr3PQjPl4A'
+    LOCK_TABLE_NAME = 'tf-state-lock'
+  }
   stages {
     stage('Clone') {
       steps {
@@ -9,32 +14,65 @@ pipeline {
         sh 'git clone https://github.com/craigsands/node-app'
       }
     }
-    stage('Build') {
+    stage('Deploy-TF-Backend') {
       steps {
         // https://jenkins.io/doc/pipeline/steps/credentials-binding/
         withCredentials([[
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'node-app-aws-credentials'
         ]]) {
-          sh 'packer validate node-app/ami.json'
-          sh 'packer build node-app/ami.json'
+          sh 'cd node-app/config/backend'
+          sh 'terraform init'
+          sh '''
+            terraform apply \
+              -auto-approve \
+              -var "aws_region=${AWS_REGION}" \
+              -var "lock_table_name=${LOCK_TABLE_NAME}" \
+              -var "s3_bucket_name=${S3_BUCKET_NAME}"
+          '''
         }
       }
     }
-    stage('Deploy') {
+    stage('Build-Node-App') {
       steps {
         // https://jenkins.io/doc/pipeline/steps/credentials-binding/
         withCredentials([[
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'node-app-aws-credentials'
         ]]) {
-          sh 'cd node-app'
-          sh 'terraform init config'
-          sh 'terraform apply -auto-approve config'
+          sh '''
+            packer validate \
+              -var "aws_region=${AWS_REGION}" \
+              node-app/ami.json
+          '''
+          sh '''
+            packer build \
+              -var "aws_region=${AWS_REGION}" \
+              node-app/ami.json
+          '''
         }
       }
     }
-    stage('Commit') {
+    stage('Deploy-Node-App') {
+      steps {
+        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'node-app-aws-credentials'
+        ]]) {
+          sh 'cd node-app/config/node-app'
+          sh 'terraform init'
+          sh '''
+            terraform apply \
+              -auto-approve \
+              -var "aws_region=${AWS_REGION}" \
+              -var "lock_table_name=${LOCK_TABLE_NAME}" \
+              -var "s3_bucket_name=${S3_BUCKET_NAME}"
+          '''
+        }
+      }
+    }
+    stage('Commit-TF-Backend-State') {
       steps {
         // https://jenkins.io/doc/pipeline/steps/credentials-binding/
         withCredentials([[
@@ -44,13 +82,13 @@ pipeline {
             passwordVariable: 'REPO_PASS'
         ]]) {
           sh 'cd node-app'
-          sh 'git add terraform.tfstate'
+          sh 'git add config/backend/terraform.tfstate'
           sh '''
             git \
               -c user.name="Craig Sands" \
               -c user.email="craigsands@gmail.com" \
               commit \
-              -m "terraform state update from Jenkins"
+              -m "terraform backend state update from Jenkins"
           '''
           sh 'git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master'
         }
