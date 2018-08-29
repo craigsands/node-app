@@ -37,8 +37,7 @@ pipeline {
           //stash {
           //  includes: 'dist/**/*',
           //  name: 'builtSources'
-          //  }
-          }
+          //}
         }
       }
     }
