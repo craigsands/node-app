@@ -33,6 +33,28 @@ pipeline {
         }
       }
     }
+    stage('Commit-TF-Backend-State') {
+      steps {
+        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+        withCredentials([[
+            $class: 'UsernamePasswordMultiBinding',
+            credentialsId: 'node-app-git-credentials',
+            usernameVariable: 'REPO_USER',
+            passwordVariable: 'REPO_PASS'
+        ]]) {
+          sh 'cd node-app'
+          sh 'git add config/backend/terraform.tfstate'
+          sh '''
+            git \
+              -c user.name="Craig Sands" \
+              -c user.email="craigsands@gmail.com" \
+              commit \
+              -m "terraform backend state update from Jenkins"
+          '''
+          sh 'git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master'
+        }
+      }
+    }
     stage('Build-Node-App') {
       steps {
         // https://jenkins.io/doc/pipeline/steps/credentials-binding/
@@ -69,28 +91,6 @@ pipeline {
               -var "lock_table_name=${LOCK_TABLE_NAME}" \
               -var "s3_bucket_name=${S3_BUCKET_NAME}"
           '''
-        }
-      }
-    }
-    stage('Commit-TF-Backend-State') {
-      steps {
-        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
-        withCredentials([[
-            $class: 'UsernamePasswordMultiBinding',
-            credentialsId: 'node-app-git-credentials',
-            usernameVariable: 'REPO_USER',
-            passwordVariable: 'REPO_PASS'
-        ]]) {
-          sh 'cd node-app'
-          sh 'git add config/backend/terraform.tfstate'
-          sh '''
-            git \
-              -c user.name="Craig Sands" \
-              -c user.email="craigsands@gmail.com" \
-              commit \
-              -m "terraform backend state update from Jenkins"
-          '''
-          sh 'git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master'
         }
       }
     }
