@@ -25,7 +25,7 @@ pipeline {
             credentialsId: 'node-app-aws-credentials'
         ]]) {
           sh '''
-            cd node-app/config/backend
+            cd config/backend
             terraform init
             terraform apply \
               -auto-approve \
