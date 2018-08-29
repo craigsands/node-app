@@ -86,8 +86,8 @@ pipeline {
             terraform apply \
               -auto-approve \
               -var "aws_region=${AWS_REGION}" \
-              -var "lock_table_name=${LOCK_TABLE_NAME}" \
-              -var "s3_bucket_name=${S3_BUCKET_NAME}"
+              -backend-config="bucket=${S3_BUCKET_NAME}" \
+              -backend-config="dynamodb_table=${LOCK_TABLE_NAME}"
           '''
         }
       }
