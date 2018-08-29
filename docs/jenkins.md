@@ -26,7 +26,7 @@ docker run \
 
 ##### Windows
 
-```
+```cmd
 docker run ^
   -d ^
   --name docker-jenkins ^
@@ -66,7 +66,7 @@ docker exec -it docker-jenkins \
 
 ##### Windows
 
-```bash
+```cmd
 docker exec -it docker-jenkins ^
   /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
 ```
