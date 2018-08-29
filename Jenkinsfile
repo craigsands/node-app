@@ -11,6 +11,7 @@ pipeline {
     stage('Clone') {
       steps {
         //sh 'git clone https://github.com/craigsands/node-app'
+        sh 'ls -l'
         checkout scm
         sh 'ls -l'
         stash includes: '**', name: 'node-app-dir'
