@@ -76,7 +76,7 @@ pipeline {
           }
           environment {
             AWS_REGION = 'us-east-1'
-            S3_BUCKET_NAME = 'node-app-tf-state-Nm1RUznHbx2l'
+            S3_BUCKET_NAME = 'node-app-tf-state-nm1ruznhbx2l'
             LOCK_TABLE_NAME = 'tf-state-lock'
           }
         }
