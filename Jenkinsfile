@@ -65,7 +65,7 @@ pipeline {
           sh '''
             cd config/node-app
             terraform init \
-              -backend-config="aws_region=${AWS_REGION}" \
+              -backend-config="region=${AWS_REGION}" \
               -backend-config="bucket=${S3_BUCKET_NAME}" \
               -backend-config="dynamodb_table=${LOCK_TABLE_NAME}"
             terraform apply \
