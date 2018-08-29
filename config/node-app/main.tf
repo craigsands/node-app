@@ -6,10 +6,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "sandcr01-sli3e9fvjpw4ap9rj2w5"
     key    = "terraform.tfstate"
-    region = "us-east-1"
-    dynamodb_table = ""
   }
 }
 
