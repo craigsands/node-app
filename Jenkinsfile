@@ -29,7 +29,6 @@ pipeline {
               -var "lock_table_name=${LOCK_TABLE_NAME}" \
               -var "s3_bucket_name=${S3_BUCKET_NAME}"
           '''
-          //stash includes: 'config/backend/terraform.tfstate', name: 'tfstate'
         }
       }
     }
@@ -42,7 +41,6 @@ pipeline {
             usernameVariable: 'REPO_USER',
             passwordVariable: 'REPO_PASS'
         ]]) {
-          //unstash 'tfstate'
           sh '''
             git add config/backend/terraform.tfstate
             git \
@@ -55,6 +53,44 @@ pipeline {
         }
       }
     }
-
+    stage('Build-Node-App') {
+      steps {
+        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'node-app-aws-credentials'
+        ]]) {
+          sh '''
+            packer validate \
+              -var "aws_region=${AWS_REGION}" \
+              ami.json
+          '''
+          sh '''
+            packer build \
+              -var "aws_region=${AWS_REGION}" \
+              ami.json
+          '''
+        }
+      }
+    }
+    stage('Deploy-Node-App') {
+      steps {
+        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'node-app-aws-credentials'
+        ]]) {
+          sh '''
+            cd config/node-app
+            terraform init
+            terraform apply \
+              -auto-approve \
+              -var "aws_region=${AWS_REGION}" \
+              -var "lock_table_name=${LOCK_TABLE_NAME}" \
+              -var "s3_bucket_name=${S3_BUCKET_NAME}"
+          '''
+        }
+      }
+    }
   }
 }
