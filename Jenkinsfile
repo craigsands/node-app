@@ -10,11 +10,7 @@ pipeline {
   stages {
     stage('Clone') {
       steps {
-        //sh 'git clone https://github.com/craigsands/node-app'
-        sh 'ls -l'
         checkout scm
-        sh 'ls -l'
-        stash includes: '**', name: 'node-app-dir'
       }
     }
     stage('Deploy-TF-Backend') {
@@ -24,9 +20,7 @@ pipeline {
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'node-app-aws-credentials'
         ]]) {
-          sh 'ls -l'
           sh '''
-            ls -l
             cd config/backend
             terraform init
             terraform apply \
@@ -35,7 +29,7 @@ pipeline {
               -var "lock_table_name=${LOCK_TABLE_NAME}" \
               -var "s3_bucket_name=${S3_BUCKET_NAME}"
           '''
-          stash includes: 'config/backend/terraform.tfstate', name: 'tfstate'
+          //stash includes: 'config/backend/terraform.tfstate', name: 'tfstate'
         }
       }
     }
@@ -48,10 +42,8 @@ pipeline {
             usernameVariable: 'REPO_USER',
             passwordVariable: 'REPO_PASS'
         ]]) {
-          sh 'ls -l'
-          unstash 'tfstate'
+          //unstash 'tfstate'
           sh '''
-            ls -l
             git add config/backend/terraform.tfstate
             git \
               -c user.name="Craig Sands" \
