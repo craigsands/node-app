@@ -21,9 +21,9 @@ pipeline {
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'node-app-aws-credentials'
         ]]) {
-          sh 'cd node-app/config/backend'
-          sh 'terraform init'
           sh '''
+            cd node-app/config/backend
+            terraform init
             terraform apply \
               -auto-approve \
               -var "aws_region=${AWS_REGION}" \
@@ -60,9 +60,9 @@ pipeline {
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'node-app-aws-credentials'
         ]]) {
-          sh 'cd node-app/config/node-app'
-          sh 'terraform init'
           sh '''
+            cd node-app/config/node-app
+            terraform init
             terraform apply \
               -auto-approve \
               -var "aws_region=${AWS_REGION}" \
