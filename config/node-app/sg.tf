@@ -1,5 +1,5 @@
 resource "aws_security_group" "node_app" {
-  name = "node-app-sg"
+  name_prefix = "node-app-sg-"
 
   ingress {
     from_port   = 3000
@@ -21,7 +21,7 @@ resource "aws_security_group" "node_app" {
 }
 
 resource "aws_security_group" "elb" {
-  name = "elb-sg"
+  name_prefix = "elb-sg-"
 
   ingress {
     from_port   = 80
