@@ -12,7 +12,8 @@ pipeline {
       steps {
         //sh 'git clone https://github.com/craigsands/node-app'
         checkout scm
-        stash includes: './**', name: 'node-app-dir'
+        sh 'ls -l'
+        stash includes: '**', name: 'node-app-dir'
       }
     }
     stage('Deploy-TF-Backend') {
