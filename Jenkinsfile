@@ -6,6 +6,7 @@ pipeline {
     AWS_REGION = 'us-east-1'
     S3_BUCKET_NAME  = 'node-app-tf-state-nm1ruznhbx2l'
     LOCK_TABLE_NAME = 'tf-state-lock'
+    TF_LOG = 'DEBUG'
   }
   stages {
     stage('Clone') {
@@ -53,26 +54,7 @@ pipeline {
         }
       }
     }
-    stage('Build-Node-App') {
-      steps {
-        // https://jenkins.io/doc/pipeline/steps/credentials-binding/
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'node-app-aws-credentials'
-        ]]) {
-          sh '''
-            packer validate \
-              -var "aws_region=${AWS_REGION}" \
-              ami.json
-          '''
-          sh '''
-            packer build \
-              -var "aws_region=${AWS_REGION}" \
-              ami.json
-          '''
-        }
-      }
-    }
+
     stage('Deploy-Node-App') {
       steps {
         // https://jenkins.io/doc/pipeline/steps/credentials-binding/
