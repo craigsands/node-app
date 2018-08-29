@@ -12,9 +12,9 @@ pipeline {
     stage('Deploy-TF-Backend') {
       steps {
         withCredentials(bindings: [[
-                      $class: 'AmazonWebServicesCredentialsBinding',
-                      credentialsId: 'node-app-aws-credentials'
-                  ]]) {
+                                $class: 'AmazonWebServicesCredentialsBinding',
+                                credentialsId: 'node-app-aws-credentials'
+                            ]]) {
             sh '''
             cd node-app/config/backend
             terraform init
@@ -27,9 +27,9 @@ pipeline {
       stage('Build-Node-App') {
         steps {
           withCredentials(bindings: [[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'node-app-aws-credentials'
-                    ]]) {
+                                    $class: 'AmazonWebServicesCredentialsBinding',
+                                    credentialsId: 'node-app-aws-credentials'
+                                ]]) {
               sh '''
             packer validate               -var "aws_region=${AWS_REGION}"               node-app/ami.json
           '''
@@ -43,9 +43,9 @@ pipeline {
         stage('Deploy-Node-App') {
           steps {
             withCredentials(bindings: [[
-                          $class: 'AmazonWebServicesCredentialsBinding',
-                          credentialsId: 'node-app-aws-credentials'
-                      ]]) {
+                                        $class: 'AmazonWebServicesCredentialsBinding',
+                                        credentialsId: 'node-app-aws-credentials'
+                                    ]]) {
                 sh '''
             cd node-app/config/node-app
             terraform init
@@ -58,12 +58,14 @@ pipeline {
           stage('Commit-TF-Backend-State') {
             steps {
               withCredentials(bindings: [[
-                            $class: 'UsernamePasswordMultiBinding',
-                            credentialsId: 'node-app-git-credentials',
-                            usernameVariable: 'REPO_USER',
-                            passwordVariable: 'REPO_PASS'
-                        ]]) {
+                                            $class: 'UsernamePasswordMultiBinding',
+                                            credentialsId: 'node-app-git-credentials',
+                                            usernameVariable: 'REPO_USER',
+                                            passwordVariable: 'REPO_PASS'
+                                        ]]) {
                   sh 'cd node-app'
+                  sh 'ls -l'
+                  sh 'ls -l node-app/config/backend'
                   sh 'git add node-app/config/backend/terraform.tfstate'
                   sh '''
             git               -c user.name="Craig Sands"               -c user.email="craigsands@gmail.com"               commit               -m "terraform backend state update from Jenkins"
