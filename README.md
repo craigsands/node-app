@@ -21,7 +21,10 @@ Everything required to deploy this application is contained in this repository. 
     2. Add steps using the Blue Ocean UI
         1. Build the container agent from a [Dockerfile](Dockerfile)
         2. Clone this repository
-        3. Build with [Packer](https://www.packer.io/)
+        3. Deploy the [Terraform S3 Backend](https://www.terraform.io/docs/backends/types/s3.html)
+        4. Commit the backend to the repository
+        5. Build the app with [Packer](https://www.packer.io/)
             1. Provision with [Ansible](https://www.ansible.com/)
-        4. Deploy with [Terraform](https://www.terraform.io/)
-        5. Push terraform.tfstate
+        6. Deploy the app with [Terraform](https://www.terraform.io/)
+
+# TODO: Add terraform deployment image

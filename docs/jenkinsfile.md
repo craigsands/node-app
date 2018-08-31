@@ -9,11 +9,13 @@ The Jenkinsfile included consists of the following structure:
 ```
 pipeline {
   agent { dockerfile true }
+  environment {}  // environment variables
   stages {
     stage('Clone') { steps {...} }
-    stage('Build') { steps {...} }
-    stage('Deploy') { steps {...} }
-    stage('Commit') { steps {...} }
+    stage('Deploy-TF-Backend') { steps {...} }
+    stage('Commit-TF-Backend-State') { steps {...} }
+    stage('Build-Node-App') { steps {...} }
+    stage('Deploy-Node-App') { steps {...} }
   }
 }
 ```
@@ -26,64 +28,52 @@ The remainder of the Jenkinsfile contains the stages (with arbitrary names) and 
 
 ## Clone
 
-As this repository is the primary source for every component of the application, the first stage clones this repository in the build container (removing an existing clone if one exists).
+As this repository is the primary source for every component of the application, the first stage clones this repository in the build container.
 
 ```
 stage('Clone') {
   steps {
-    sh 'rm -rf node-app'
-    sh 'git clone https://github.com/craigsands/node-app'
+    checkout scm
   }
 }
 ```
 
-## Build
+## Deploy-TF-Backend
 
-The second stage builds the AWS AMI using Packer. Since Packer requires access to AWS, the Jenkinsfile includes a class `AmazonWebServicesCredentialsBinding` to bind the AWS credentials specified previously in the Jenkins Credentials section. The credentials are directly referenced by the ID `node-app-aws-credentials`, entered when specifying the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY. The `AmazonWebServicesCredentialsBinding` class is provided by the [CloudBees Amazon Web Services Credentials](https://plugins.jenkins.io/aws-credentials) plugin, and automatically adds the credentials as environment variables.
+Terrafrom uses a `.tfstate` file for keeping track of the AWS resources that were created. By default, the `.tfstate` file is saved in the current working directory. However, Terraform allows for configuring 'backends' for keeping remote state. For this node-app, the state will be saved in an S3 bucket with versioning (as part of the node-app deployment, the final stage of this pipeline). Since the S3 bucket needs to be created, along with a DynamoDb table for locking while Terraform is running, Terraform can be used for that as well. For the S3 and DynamoDb table creation, Terraform will use the `.tf` files in [`config/backend`](../config/backend).
 
-With the credentials provided, this step uses shell commands to validate the [template file](../ami.json) and build the AMI.
+Since Terraform requires access to AWS, the Jenkinsfile includes a class `AmazonWebServicesCredentialsBinding` to bind the AWS credentials specified previously in the Jenkins Credentials section. The credentials are directly referenced by the ID `node-app-aws-credentials`, entered when specifying the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY. The `AmazonWebServicesCredentialsBinding` class is provided by the [CloudBees Amazon Web Services Credentials](https://plugins.jenkins.io/aws-credentials) plugin, and automatically adds the credentials as environment variables.
+
+Since the build container is built on demand, the `config/backend` directory is initialized with Terraform first, then applied.
 
 ```
-stage('Build') {
+stage('Deploy-TF-Backend') {
   steps {
     // https://jenkins.io/doc/pipeline/steps/credentials-binding/
     withCredentials([[
         $class: 'AmazonWebServicesCredentialsBinding',
         credentialsId: 'node-app-aws-credentials'
     ]]) {
-      sh 'packer validate node-app/ami.json'
-      sh 'packer build node-app/ami.json'
+      sh '''
+        cd config/backend
+        terraform init
+        terraform apply \
+          -auto-approve \
+          -var "aws_region=${AWS_REGION}" \
+          -var "lock_table_name=${LOCK_TABLE_NAME}" \
+          -var "s3_bucket_name=${S3_BUCKET_NAME}"
+      '''
     }
   }
 }
 ```
 
-## Deploy
+## Commit-TF-Backend-State
 
-The deploy stage again binds AWS credentials so that Terraform can build the appropriate resources in AWS. Since the build container is built on demand, the config directory is initialized with Terraform first, then applied. The [Terraform code](../config) references the AMI built in the previous step to use in the deployment.
-
-```
-stage('Deploy') {
-  steps {
-    // https://jenkins.io/doc/pipeline/steps/credentials-binding/
-    withCredentials([[
-        $class: 'AmazonWebServicesCredentialsBinding',
-        credentialsId: 'node-app-aws-credentials'
-    ]]) {
-      sh 'cd node-app'
-      sh 'terraform init config'
-      sh 'terraform apply -auto-approve config'
-    }
-  }
-}
-```
-
-## Commit
-
-After the deployment process is complete, Terraform writes data for each AWS object created to the `terraform.tfstate` file. This file can then be committed to the original (or another) repository for reference and version control. Since committing the file to Github, the `UsernamePasswordMultiBinding` class is used (directly referenced by the ID `node-app-git-credentials`) to allow the step to push the Terraform state file into the repository. Unlike the CloudBees AWS credentials plugin, variables for the username and password are explicitly defined (in this case `REPO_USER` and `REPO_PASS`), and then used in the following shell steps.
+After the S3 and DynamoDb deployment process is complete, Terraform wrote the state to a local `terraform.tfstate` file. S3 will be used for the backend state for the node-app, but this deployment's state file can be committed to the original (or another) repository for reference and version control. Since committing the file to Github, the `UsernamePasswordMultiBinding` class is used (directly referenced by the ID `node-app-git-credentials`) to allow the step to push the Terraform state file into the repository. Unlike the CloudBees AWS credentials plugin, variables for the username and password are explicitly defined (in this case `REPO_USER` and `REPO_PASS`), and then used in the following shell steps.
 
 ```
-stage('Commit') {
+stage('Commit-TF-Backend-State') {
   steps {
     // https://jenkins.io/doc/pipeline/steps/credentials-binding/
     withCredentials([[
@@ -92,16 +82,69 @@ stage('Commit') {
         usernameVariable: 'REPO_USER',
         passwordVariable: 'REPO_PASS'
     ]]) {
-      sh 'cd node-app'
-      sh 'git add terraform.tfstate'
       sh '''
+        git add config/backend/terraform.tfstate
         git \
           -c user.name="Craig Sands" \
           -c user.email="craigsands@gmail.com" \
           commit \
-          -m "terraform state update from Jenkins"
+          -m "terraform backend state update from Jenkins"
+        git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master
       '''
-      sh 'git push https://${REPO_USER}:${REPO_PASS}@github.com/craigsands/node-app.git master'
+    }
+  }
+}
+```
+
+## Build-Node-App
+
+The fourth stage builds the AWS AMI using Packer. Packer also requires access to AWS, and uses the same CloudBees Amazon Web Services Credentials plugin as the previous Terraform stage. This step uses shell commands to validate the [template file](../ami.json) and build the AMI.
+
+```
+stage('Build-Node-App') {
+  steps {
+    // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+    withCredentials([[
+        $class: 'AmazonWebServicesCredentialsBinding',
+        credentialsId: 'node-app-aws-credentials'
+    ]]) {
+      sh '''
+        packer validate \
+          -var "aws_region=${AWS_REGION}" \
+          ami.json
+      '''
+      sh '''
+        packer build \
+          -var "aws_region=${AWS_REGION}" \
+          ami.json
+      '''
+    }
+  }
+}
+```
+
+## Deploy
+
+The final stage again binds AWS credentials so that Terraform can build the appropriate resources in AWS. The [Terraform code](../config/node-app) references the AMI built in the previous step to use in the deployment. This stage deploys the resources necessary to create an autoscaling application group managed by CloudFormation.
+
+```
+stage('Deploy-Node-App') {
+  steps {
+    // https://jenkins.io/doc/pipeline/steps/credentials-binding/
+    withCredentials([[
+        $class: 'AmazonWebServicesCredentialsBinding',
+        credentialsId: 'node-app-aws-credentials'
+    ]]) {
+      sh '''
+        cd config/node-app
+        terraform init \
+          -backend-config="region=${AWS_REGION}" \
+          -backend-config="bucket=${S3_BUCKET_NAME}" \
+          -backend-config="dynamodb_table=${LOCK_TABLE_NAME}"
+        terraform apply \
+          -auto-approve \
+          -var "aws_region=${AWS_REGION}"
+      '''
     }
   }
 }
