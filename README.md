@@ -4,7 +4,7 @@ This repository demonstrates the pipeline to deploy a simple web application.
 
 Using Jenkins, an open source automation server, application code can be committed to a git repository and then a deployed to AWS using Hashicorp's Packer and Terraform. Since Terraform creates a CloudFormation stack in AWS, additional commits to modify the application will trigger rolling updates and automatically update the instances in the stack.
 
-<img src="docs/static/node-app.png" width="800">
+<img src="docs/static/overview.png" width="800">
 
 #### Prerequisites
 
@@ -27,4 +27,6 @@ Everything required to deploy this application is contained in this repository. 
             1. Provision with [Ansible](https://www.ansible.com/)
         6. Deploy the app with [Terraform](https://www.terraform.io/)
 
-# TODO: Add terraform deployment image
+## Result
+
+<img src="docs/static/node-app.png" width="800">

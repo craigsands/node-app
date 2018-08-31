@@ -125,7 +125,7 @@ stage('Build-Node-App') {
 
 ## Deploy
 
-The final stage again binds AWS credentials so that Terraform can build the appropriate resources in AWS. The [Terraform code](../config/node-app) references the AMI built in the previous step to use in the deployment. This stage deploys the resources necessary to create an autoscaling application group managed by CloudFormation.
+The final stage again binds AWS credentials so that Terraform can build the appropriate resources in AWS. The [Terraform code](../config/node-app) references the AMI built in the previous step to use in the deployment. This stage deploys the resources necessary to create an Auto Scaling Group managed by CloudFormation.
 
 ```
 stage('Deploy-Node-App') {
