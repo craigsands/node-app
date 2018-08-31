@@ -4,7 +4,7 @@ pipeline {
   }
   environment {
     AWS_REGION = 'us-east-1'
-    S3_BUCKET_NAME  = 'node-app-tf-state-nm1ruznhbx2l'
+    S3_BUCKET_NAME  = 'node-app-tf-state-dfpo8h43tligsw3'
     LOCK_TABLE_NAME = 'tf-state-lock'
     //TF_LOG = 'DEBUG'
   }
